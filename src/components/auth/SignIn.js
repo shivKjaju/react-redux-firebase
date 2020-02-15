@@ -7,6 +7,7 @@ class SignIn extends Component {
 
     handleChange = (e) => {
         this.setState({
+            // gets the value with respect to the id
             [e.target.id]: e.target.value
         })
     }
