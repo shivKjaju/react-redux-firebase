@@ -10,6 +10,8 @@ import thunk from 'redux-thunk'
 import { createFirestoreInstance, getFirestore, reduxFirestore } from 'redux-firestore'
 import { ReactReduxFirebaseProvider, getFirebase } from 'react-redux-firebase'
 
+import { composeWithDevTools } from 'redux-devtools-extension';
+
 // import { reduxFirestore, getFirestore } from 'redux-firestore'
 // import { reactReduxFirebase, getFirebase } from 'react-redux-firebase'
 
@@ -22,6 +24,7 @@ const store = createStore(rootReducer,
   compose(
   applyMiddleware(thunk.withExtraArgument({getFirebase, getFirestore})),
   reduxFirestore(firebase, fbConfig),
+  composeWithDevTools()
   // reactReduxFirebase(fbConfig)
   )
   );
