@@ -4,16 +4,13 @@ import App from './App';
 import './index.css';
 import  { createStore, applyMiddleware, compose } from 'redux'
 import rootReducer from './store/reducers/rootReducer'
-import { Provider } from 'react-redux'
+import { Provider, useSelector } from 'react-redux'
 import thunk from 'redux-thunk'
 
 import { createFirestoreInstance, getFirestore, reduxFirestore } from 'redux-firestore'
-import { ReactReduxFirebaseProvider, getFirebase } from 'react-redux-firebase'
+import { ReactReduxFirebaseProvider, getFirebase, isLoaded } from 'react-redux-firebase'
 
 import { composeWithDevTools } from 'redux-devtools-extension';
-
-// import { reduxFirestore, getFirestore } from 'redux-firestore'
-// import { reactReduxFirebase, getFirebase } from 'react-redux-firebase'
 
 import fbConfig from './config/fbConfig'
 import firebase from 'firebase/app'
@@ -23,7 +20,7 @@ import firebase from 'firebase/app'
 const store = createStore(rootReducer, 
   compose(
   applyMiddleware(thunk.withExtraArgument({getFirebase, getFirestore})),
-  reduxFirestore(firebase, fbConfig),
+  reduxFirestore(firebase, fbConfig, { attachAuthIsReady: true}),
   composeWithDevTools()
   // reactReduxFirebase(fbConfig)
   )
@@ -31,17 +28,31 @@ const store = createStore(rootReducer,
 
 
 const rrfProps = {
-  firebase,
-  config: fbConfig,
-  dispatch: store.dispatch,
-  createFirestoreInstance
+    firebase,
+    config: fbConfig,
+    dispatch: store.dispatch,
+    createFirestoreInstance,
+    userProfile: 'users',
+    presence: 'presence',
+    sessions: 'sessions'
 };
 
-ReactDOM.render(
- <Provider store={store}>
-   <ReactReduxFirebaseProvider {...rrfProps}>
-    <App />
-    </ReactReduxFirebaseProvider>
-   </Provider>,
-  document.getElementById('root')
-);
+const AuthIsLoaded = ( {children} ) =>{
+  const auth = useSelector(state=>state.firebase.auth)
+  if(!isLoaded(auth)) return <div className="center">Loading...</div>
+  return children
+}
+
+  ReactDOM.render(
+    <Provider store={store}>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <AuthIsLoaded>
+       <App />
+       </AuthIsLoaded>
+       </ReactReduxFirebaseProvider>
+      </Provider>,
+     document.getElementById('root')
+   );
+
+
+
