@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom'
 class SignIn extends Component {
     state={
         email:'',
-        passwrod:''
+        password:''
     }
 
     handleChange = (e) => {

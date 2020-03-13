@@ -17,22 +17,26 @@ import firebase from 'firebase/app'
 
 
 // withExtraArgument allows you to pass getFirebase and getFirestore that can be accessed in actions to perform async tasks
+const rrfConfig = {
+  userProfile: 'users',
+  useFirestoreForProfile: true,
+}
+
 const store = createStore(rootReducer, 
   compose(
   applyMiddleware(thunk.withExtraArgument({getFirebase, getFirestore})),
-  reduxFirestore(firebase, fbConfig, { attachAuthIsReady: true}),
+  reduxFirestore(firebase, fbConfig,  { attachAuthIsReady: true}),
   composeWithDevTools()
   // reactReduxFirebase(fbConfig)
   )
   );
 
-
 const rrfProps = {
     firebase,
-    config: fbConfig,
+    fbConfig,
+    config: rrfConfig,
     dispatch: store.dispatch,
     createFirestoreInstance,
-    userProfile: 'users',
     presence: 'presence',
     sessions: 'sessions'
 };
