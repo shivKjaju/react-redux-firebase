@@ -4,9 +4,9 @@ export const createProject = (project) =>{
         const dataStore = getFirestore();
         dataStore.collection('projects').add({
             ...project,
-            authorFirstName: 'Ryu',
-            authorLastName: 'Jaju',
-            authorId: 1234,
+            authorFirstName: getState().firebase.profile.firstName,
+            authorLastName: getState().firebase.profile.lastName,
+            authorId: getState().firebase.auth.uid,
             createdAt: new Date()
         }).then(() => {
             dispatch({type: 'CREATE_PROJECT', project});

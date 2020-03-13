@@ -23,7 +23,6 @@ export const signOut = () => {
 }
 
 export const signUp = (newUser) => {
-    console.log("new user is ", newUser);
     return (dispatch, getState, {getFirebase, getFirestore}) => {
         const firebase = getFirebase();
         const firestore = getFirestore();
