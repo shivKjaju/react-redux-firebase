@@ -18,7 +18,7 @@ const createNotification = (notification => {
         .then(doc => console.log('notification added', doc));
 })
 
-// cloud function that riggers whenever a new project is created
+// cloud function that riggers when a new project is created
 exports.onProjectCreate = functions.firestore
     .document('/projects/{projectId}')
     .onCreate(doc =>{
@@ -30,4 +30,20 @@ exports.onProjectCreate = functions.firestore
         }
 
         return createNotification(notification)
+})
+
+// cloud function that triggers when a new user signs up
+exports.newUserSignUp = functions.auth.user()
+    .onCreate(user => {
+        return admin.firestore().collection('users')
+            .doc(user.uid).get().then(doc => {
+                const newUser = doc.data()
+                const notification = {
+                    content: 'Joined the party',
+                    user: `${newUser.firstName} ${newUser.lastName}`,
+                    time: admin.firestore.FieldValue.serverTimestamp()
+                }
+
+                createNotification(notification)
+            })
 })
